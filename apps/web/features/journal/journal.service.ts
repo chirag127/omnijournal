@@ -11,13 +11,14 @@ import {
   serverTimestamp,
   type Unsubscribe,
 } from 'firebase/firestore'
-import { db } from '@/lib/firebase/config'
+import { getFirebaseDb } from '@/lib/firebase/config'
 import { db as localDb } from '@/lib/db/schema'
 import type { JournalEntry } from '@/lib/db/schema'
 
 const COLLECTION = 'journalEntries'
 
 export function subscribeJournalEntries(userId: string, onData: (entries: JournalEntry[]) => void): Unsubscribe {
+  const db = getFirebaseDb()!
   const q = query(
     collection(db, COLLECTION),
     where('userId', '==', userId),
@@ -36,6 +37,7 @@ export async function createJournalEntry(
   userId: string,
   data: Omit<JournalEntry, 'id' | 'userId' | 'createdAt' | 'updatedAt' | 'isDeleted'>
 ) {
+  const db = getFirebaseDb()!
   const docRef = await addDoc(collection(db, COLLECTION), {
     ...data,
     userId,
@@ -47,9 +49,11 @@ export async function createJournalEntry(
 }
 
 export async function updateJournalEntry(id: string, data: Partial<JournalEntry>) {
+  const db = getFirebaseDb()!
   await updateDoc(doc(db, COLLECTION, id), { ...data, updatedAt: serverTimestamp() })
 }
 
 export async function deleteJournalEntry(id: string) {
+  const db = getFirebaseDb()!
   await updateDoc(doc(db, COLLECTION, id), { isDeleted: true, updatedAt: serverTimestamp() })
 }

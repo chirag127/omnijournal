@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { createUserWithEmailAndPassword, updateProfile, signInWithPopup, GoogleAuthProvider } from 'firebase/auth'
-import { auth } from '@/lib/firebase/config'
+import { getFirebaseAuth } from '@/lib/firebase/config'
 import { useRouter } from 'next/navigation'
 
 export default function RegisterPage() {
@@ -17,6 +17,7 @@ export default function RegisterPage() {
     setLoading(true)
     setError('')
     try {
+      const auth = getFirebaseAuth()!
       const { user } = await createUserWithEmailAndPassword(auth, email, password)
       await updateProfile(user, { displayName: name })
       router.push('/dashboard')
@@ -31,6 +32,7 @@ export default function RegisterPage() {
     setLoading(true)
     setError('')
     try {
+      const auth = getFirebaseAuth()!
       await signInWithPopup(auth, new GoogleAuthProvider())
       router.push('/dashboard')
     } catch (err) {

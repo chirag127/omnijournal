@@ -1,6 +1,6 @@
 'use client'
 import { useAuthStore } from '@/stores/auth.store'
-import { auth } from '@/lib/firebase/config'
+import { getFirebaseAuth } from '@/lib/firebase/config'
 import { signOut } from 'firebase/auth'
 import { useRouter } from 'next/navigation'
 
@@ -9,7 +9,8 @@ export function useAuth() {
   const router = useRouter()
 
   async function logout() {
-    await signOut(auth)
+    const auth = getFirebaseAuth()
+    if (auth) await signOut(auth)
     router.push('/login')
   }
 

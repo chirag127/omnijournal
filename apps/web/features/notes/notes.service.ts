@@ -10,13 +10,14 @@ import {
   serverTimestamp,
   type Unsubscribe,
 } from 'firebase/firestore'
-import { db } from '@/lib/firebase/config'
+import { getFirebaseDb } from '@/lib/firebase/config'
 import { db as localDb } from '@/lib/db/schema'
 import type { Note } from '@/lib/db/schema'
 
 const COLLECTION = 'notes'
 
 export function subscribeNotes(userId: string, onData: (notes: Note[]) => void): Unsubscribe {
+  const db = getFirebaseDb()!
   const q = query(
     collection(db, COLLECTION),
     where('userId', '==', userId),
@@ -35,6 +36,7 @@ export async function createNote(
   userId: string,
   data: Omit<Note, 'id' | 'userId' | 'createdAt' | 'updatedAt' | 'isDeleted'>
 ) {
+  const db = getFirebaseDb()!
   const docRef = await addDoc(collection(db, COLLECTION), {
     ...data,
     userId,
@@ -46,10 +48,12 @@ export async function createNote(
 }
 
 export async function updateNote(id: string, data: Partial<Note>) {
+  const db = getFirebaseDb()!
   await updateDoc(doc(db, COLLECTION, id), { ...data, updatedAt: serverTimestamp() })
 }
 
 export async function deleteNote(id: string) {
+  const db = getFirebaseDb()!
   await updateDoc(doc(db, COLLECTION, id), { isDeleted: true, updatedAt: serverTimestamp() })
 }
 

@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth'
-import { auth } from '@/lib/firebase/config'
+import { getFirebaseAuth } from '@/lib/firebase/config'
 import { useRouter } from 'next/navigation'
 
 export default function LoginPage() {
@@ -16,6 +16,7 @@ export default function LoginPage() {
     setLoading(true)
     setError('')
     try {
+      const auth = getFirebaseAuth()!
       await signInWithEmailAndPassword(auth, email, password)
       router.push('/dashboard')
     } catch (err) {
@@ -29,6 +30,7 @@ export default function LoginPage() {
     setLoading(true)
     setError('')
     try {
+      const auth = getFirebaseAuth()!
       await signInWithPopup(auth, new GoogleAuthProvider())
       router.push('/dashboard')
     } catch (err) {

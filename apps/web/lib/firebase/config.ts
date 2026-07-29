@@ -1,6 +1,6 @@
-import { initializeApp, getApps, getApp } from 'firebase/app'
-import { getAuth } from 'firebase/auth'
-import { getFirestore, enableIndexedDbPersistence } from 'firebase/firestore'
+import { initializeApp, getApps, getApp, FirebaseApp } from 'firebase/app'
+import { Auth, getAuth } from 'firebase/auth'
+import { Firestore, getFirestore, enableIndexedDbPersistence } from 'firebase/firestore'
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -11,12 +11,21 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 }
 
-const app = getApps().length ? getApp() : initializeApp(firebaseConfig)
+function getFirebaseApp(): FirebaseApp | null {
+  if (typeof window === 'undefined') return null
+  if (!firebaseConfig.apiKey) return null
+  return getApps().length ? getApp() : initializeApp(firebaseConfig)
+}
 
-export const auth = getAuth(app)
-export const db = getFirestore(app)
+export function getFirebaseAuth(): Auth | null {
+  const app = getFirebaseApp()
+  return app ? getAuth(app) : null
+}
 
-if (typeof window !== 'undefined') {
+export function getFirebaseDb(): Firestore | null {
+  const app = getFirebaseApp()
+  if (!app) return null
+  const db = getFirestore(app)
   enableIndexedDbPersistence(db).catch((err) => {
     if (err.code === 'failed-precondition') {
       console.warn('Firestore persistence failed: multiple tabs open')
@@ -24,6 +33,11 @@ if (typeof window !== 'undefined') {
       console.warn('Firestore persistence not available in this browser')
     }
   })
+  return db
 }
 
-export default app
+// Lazy singletons — safe to use in client components
+export const auth = typeof window !== 'undefined' ? getFirebaseAuth() : null
+export const db = typeof window !== 'undefined' ? getFirebaseDb() : null
+
+export default { getFirebaseApp, getFirebaseAuth, getFirebaseDb }
