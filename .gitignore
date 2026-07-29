@@ -7,3 +7,5 @@ dist/
 .turbo/
 coverage/
 .DS_Store
+
+.vercel
