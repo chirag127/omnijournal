@@ -6,7 +6,6 @@ on:
 
 permissions:
   contents: write
-  workflows: write
 
 concurrency:
   group: megalinter-${{ github.ref }}
@@ -39,3 +38,4 @@ jobs:
           commit_message: "style: auto-fixes from MegaLinter"
           commit_user_name: megalinter-bot
           commit_user_email: megalinter-bot@users.noreply.github.com
+          file_pattern: "!.github/workflows/**"
