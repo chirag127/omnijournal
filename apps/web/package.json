@@ -13,7 +13,7 @@
     "test:e2e": "playwright test"
   },
   "dependencies": {
-    "next": "^15.4.0",
+    "next": "^15.5.24",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "@blocknote/core": "^0.52.1",
