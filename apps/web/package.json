@@ -28,7 +28,7 @@
     "recharts": "^2.15.3",
     "@xyflow/react": "^12.6.2",
     "react-hook-form": "^7.60.0",
-    "zod": "^3.25.76",
+    "zod": "^4.6.6",
     "minisearch": "^7.2.0",
     "fuse.js": "^7.1.0",
     "lucide-react": "^0.513.0",
